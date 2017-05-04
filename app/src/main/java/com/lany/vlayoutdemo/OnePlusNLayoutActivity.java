@@ -43,10 +43,6 @@ public class OnePlusNLayoutActivity extends AppCompatActivity {
     private static final boolean HORIZONTAL_SCROLL_LAYOUT = true;
     private static final boolean SCROLL_FIX_LAYOUT = true;
 
-    private TextView mFirstText;
-    private TextView mLastText;
-    private TextView mCountText;
-    private TextView mTotalOffsetText;
     private Runnable trigger;
     private RecyclerView recyclerView;
 
@@ -54,49 +50,8 @@ public class OnePlusNLayoutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
-        mFirstText = (TextView) findViewById(R.id.first);
-        mLastText = (TextView) findViewById(R.id.last);
-        mCountText = (TextView) findViewById(R.id.count);
-        mTotalOffsetText = (TextView) findViewById(R.id.total_offset);
         recyclerView = (RecyclerView) findViewById(R.id.main_view);
-
-        findViewById(R.id.jump).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText position = (EditText) findViewById(R.id.position);
-                if (!TextUtils.isEmpty(position.getText())) {
-                    try {
-                        int pos = Integer.parseInt(position.getText().toString());
-                        recyclerView.scrollToPosition(pos);
-                    } catch (Exception e) {
-                        Log.e("VlayoutActivity", e.getMessage(), e);
-                    }
-                } else {
-                    recyclerView.requestLayout();
-                }
-            }
-        });
-
-
         final VirtualLayoutManager layoutManager = new VirtualLayoutManager(this);
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
-
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int i, int i2) {
-                mFirstText.setText("First: " + layoutManager.findFirstVisibleItemPosition());
-                mLastText.setText("Existing: " + MainViewHolder.existing + " Created: " + MainViewHolder.createdTimes);
-                mCountText.setText("Count: " + recyclerView.getChildCount());
-                mTotalOffsetText.setText("Total Offset: " + layoutManager.getOffsetToStart());
-            }
-        });
-
-
         recyclerView.setLayoutManager(layoutManager);
 
         // layoutManager.setReverseLayout(true);
