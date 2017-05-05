@@ -1,8 +1,6 @@
 package com.lany.vlayoutdemo;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,12 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
@@ -53,31 +47,14 @@ public class OnePlusNLayoutActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.main_view);
         final VirtualLayoutManager layoutManager = new VirtualLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        // layoutManager.setReverseLayout(true);
-
-        RecyclerView.ItemDecoration itemDecoration = new RecyclerView.ItemDecoration() {
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                int position = ((LayoutParams) view.getLayoutParams()).getViewPosition();
-                outRect.set(4, 4, 4, 4);
-            }
-        };
-
-
         final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
-
         recyclerView.setRecycledViewPool(viewPool);
-
-        // recyclerView.addItemDecoration(itemDecoration);
-
         viewPool.setMaxRecycledViews(0, 20);
 
         final DelegateAdapter delegateAdapter = new DelegateAdapter(layoutManager, true);
-
         recyclerView.setAdapter(delegateAdapter);
 
         List<DelegateAdapter.Adapter> adapters = new LinkedList<>();
-
 
         if (BANNER_LAYOUT) {
             adapters.add(new SubAdapter(this, new LinearLayoutHelper(), 1) {
@@ -352,23 +329,6 @@ public class OnePlusNLayoutActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return mCount;
-        }
-    }
-
-    static class MainViewHolder extends RecyclerView.ViewHolder {
-        public static volatile int existing = 0;
-        public static int createdTimes = 0;
-
-        public MainViewHolder(View itemView) {
-            super(itemView);
-            createdTimes++;
-            existing++;
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            existing--;
-            super.finalize();
         }
     }
 }
