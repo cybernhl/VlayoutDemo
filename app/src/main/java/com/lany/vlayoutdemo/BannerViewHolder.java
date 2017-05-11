@@ -5,12 +5,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.lany.view.BannerView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BannerViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.banner_img)
-    ImageView banner;
+    @BindView(R.id.banner_view)
+    BannerView bannerView;
 
     public BannerViewHolder(View itemView) {
         super(itemView);

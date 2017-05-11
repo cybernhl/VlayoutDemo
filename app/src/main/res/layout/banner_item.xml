@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.lany.view.BannerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/banner_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/border_bg">
-
-    <ImageView
-        android:id="@+id/banner_img"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/item_background" />
-</FrameLayout>
+    android:layout_height="200dp"
+    android:background="@drawable/item_background" />
