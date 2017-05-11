@@ -28,15 +28,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
         recyclerView = (RecyclerView) findViewById(R.id.main_view);
-
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(this);
-
         recyclerView.setLayoutManager(layoutManager);
-
-        //layoutManager.setReverseLayout(true);
-
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 outRect.set(10, 10, 10, 10);
@@ -46,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
         final List<LayoutHelper> helpers = new LinkedList<>();
 
         final GridLayoutHelper gridLayoutHelper = new GridLayoutHelper(4);
-        gridLayoutHelper.setItemCount(25);
+        gridLayoutHelper.setItemCount(16);
 
 
-        final ScrollFixLayoutHelper scrollFixLayoutHelper = new ScrollFixLayoutHelper(FixLayoutHelper.TOP_RIGHT, 100, 100);
+        final ScrollFixLayoutHelper scrollFixLayoutHelper = new ScrollFixLayoutHelper(FixLayoutHelper.TOP_RIGHT, 200, 200);
 
         helpers.add(DefaultLayoutHelper.newHelper(7));
         helpers.add(scrollFixLayoutHelper);
@@ -66,15 +60,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                VirtualLayoutManager.LayoutParams layoutParams = new VirtualLayoutManager.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, 300);
+                VirtualLayoutManager.LayoutParams layoutParams = new VirtualLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300);
                 holder.itemView.setLayoutParams(layoutParams);
 
                 ((TextView) holder.itemView).setText(Integer.toString(position));
 
                 if (position == 7) {
-                    layoutParams.height = 60;
-                    layoutParams.width = 60;
+                    layoutParams.height = 150;
+                    layoutParams.width = 150;
                 } else if (position > 35) {
                     layoutParams.height = 200 + (position - 30) * 100;
                 }
