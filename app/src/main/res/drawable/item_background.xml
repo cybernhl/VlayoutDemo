@@ -26,7 +26,7 @@
     <item android:drawable="@color/item_activated_color"
           android:state_activated="true"/>
 
-    <item android:drawable="@color/item_pressed_color"
+    <item android:drawable="@color/item_activated_color"
           android:state_pressed="true"/>
 
     <item android:drawable="@color/item_default_color"/>

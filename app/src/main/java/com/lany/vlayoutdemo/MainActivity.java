@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private static final boolean GRID_LAYOUT = true;
     private static final boolean STICKY_LAYOUT = true;
     private static final boolean SCROLL_FIX_LAYOUT = true;
-
-    private Runnable trigger;
     private RecyclerView mRecyclerView;
 
     @Override
@@ -190,20 +188,5 @@ public class MainActivity extends AppCompatActivity {
             adapters.add(new SubAdapter(this, new LinearLayoutHelper(), 100));
 
         delegateAdapter.setAdapters(adapters);
-
-        final Handler mainHandler = new Handler(Looper.getMainLooper());
-
-        trigger = new Runnable() {
-            @Override
-            public void run() {
-                // recyclerView.scrollToPosition(22);
-                // recyclerView.getAdapter().notifyDataSetChanged();
-                mRecyclerView.requestLayout();
-                // mainHandler.postDelayed(trigger, 1000);
-            }
-        };
-
-
-        mainHandler.postDelayed(trigger, 1000);
     }
 }
