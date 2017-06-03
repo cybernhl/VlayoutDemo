@@ -10,20 +10,11 @@ import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
 
-/**
- * Created by Administrator on 2017/5/5 0005.
- */
-
 public class SubAdapter  extends DelegateAdapter.Adapter<MainViewHolder> {
-
     private Context mContext;
-
     private LayoutHelper mLayoutHelper;
-
-
     private VirtualLayoutManager.LayoutParams mLayoutParams;
     private int mCount = 0;
-
 
     public SubAdapter(Context context, LayoutHelper layoutHelper, int count) {
         this(context, layoutHelper, count, new VirtualLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300));
@@ -48,9 +39,7 @@ public class SubAdapter  extends DelegateAdapter.Adapter<MainViewHolder> {
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position) {
-        // only vertical
-        holder.itemView.setLayoutParams(
-                new VirtualLayoutManager.LayoutParams(mLayoutParams));
+        holder.itemView.setLayoutParams(new VirtualLayoutManager.LayoutParams(mLayoutParams));
     }
 
 

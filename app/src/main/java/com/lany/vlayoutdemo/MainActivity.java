@@ -1,106 +1,253 @@
 package com.lany.vlayoutdemo;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.alibaba.android.vlayout.LayoutHelper;
-import com.alibaba.android.vlayout.VirtualLayoutAdapter;
+import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
-import com.alibaba.android.vlayout.layout.DefaultLayoutHelper;
+import com.alibaba.android.vlayout.VirtualLayoutManager.LayoutParams;
 import com.alibaba.android.vlayout.layout.FixLayoutHelper;
 import com.alibaba.android.vlayout.layout.GridLayoutHelper;
+import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
+import com.alibaba.android.vlayout.layout.OnePlusNLayoutHelper;
+import com.alibaba.android.vlayout.layout.OnePlusNLayoutHelperEx;
 import com.alibaba.android.vlayout.layout.ScrollFixLayoutHelper;
+import com.alibaba.android.vlayout.layout.StickyLayoutHelper;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    RecyclerView recyclerView;
+    private static final boolean BANNER_LAYOUT = true;
+    private static final boolean LINEAR_LAYOUT = true;
+    private static final boolean ONEN_LAYOUT = true;
+    private static final boolean GRID_LAYOUT = true;
+    private static final boolean STICKY_LAYOUT = true;
+    private static final boolean HORIZONTAL_SCROLL_LAYOUT = true;
+    private static final boolean SCROLL_FIX_LAYOUT = true;
+
+    private Runnable trigger;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        recyclerView = (RecyclerView) findViewById(R.id.main_view);
-        VirtualLayoutManager layoutManager = new VirtualLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                outRect.set(10, 10, 10, 10);
-            }
-        });
+        mRecyclerView = (RecyclerView) findViewById(R.id.main_view);
+        final VirtualLayoutManager layoutManager = new VirtualLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+        final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+        mRecyclerView.setRecycledViewPool(viewPool);
+        viewPool.setMaxRecycledViews(0, 20);
 
-        final List<LayoutHelper> helpers = new LinkedList<>();
+        final DelegateAdapter delegateAdapter = new DelegateAdapter(layoutManager, true);
+        mRecyclerView.setAdapter(delegateAdapter);
 
-        final GridLayoutHelper gridLayoutHelper = new GridLayoutHelper(4);
-        gridLayoutHelper.setItemCount(16);
+        List<DelegateAdapter.Adapter> adapters = new LinkedList<>();
 
+        if (BANNER_LAYOUT) {
+            adapters.add(new BannerSubAdapter(this, new LinearLayoutHelper(), 1) {
 
-        final ScrollFixLayoutHelper scrollFixLayoutHelper = new ScrollFixLayoutHelper(FixLayoutHelper.TOP_RIGHT, 200, 200);
-
-        helpers.add(DefaultLayoutHelper.newHelper(7));
-        helpers.add(scrollFixLayoutHelper);
-        helpers.add(DefaultLayoutHelper.newHelper(2));
-        helpers.add(gridLayoutHelper);
-
-        layoutManager.setLayoutHelpers(helpers);
-
-        recyclerView.setAdapter(new VirtualLayoutAdapter(layoutManager) {
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new MainViewHolder(new TextView(MainActivity.this));
-            }
-
-            @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                VirtualLayoutManager.LayoutParams layoutParams = new VirtualLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300);
-                holder.itemView.setLayoutParams(layoutParams);
-
-                ((TextView) holder.itemView).setText(Integer.toString(position));
-
-                if (position == 7) {
-                    layoutParams.height = 150;
-                    layoutParams.width = 150;
-                } else if (position > 35) {
-                    layoutParams.height = 200 + (position - 30) * 100;
+                @Override
+                public void onViewRecycled(MainViewHolder holder) {
+                    if (holder.itemView instanceof ViewPager) {
+                        ((ViewPager) holder.itemView).setAdapter(null);
+                    }
                 }
 
-                if (position > 35) {
-                    holder.itemView.setBackgroundColor(0x66cc0000 + (position - 30) * 128);
-                } else if (position % 2 == 0) {
-                    holder.itemView.setBackgroundColor(0xaa00ff00);
-                } else {
-                    holder.itemView.setBackgroundColor(0xccff00ff);
+                @Override
+                public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                    if (viewType == 1)
+                        return new MainViewHolder(LayoutInflater.from(MainActivity.this).inflate(R.layout.view_pager, parent, false));
+                    return super.onCreateViewHolder(parent, viewType);
                 }
-            }
 
-            @Override
-            public int getItemCount() {
-                List<LayoutHelper> helpers = getLayoutHelpers();
-                if (helpers == null) {
-                    return 0;
+                @Override
+                public int getItemViewType(int position) {
+                    return 1;
                 }
-                int count = 0;
-                for (int i = 0, size = helpers.size(); i < size; i++) {
-                    count += helpers.get(i).getItemCount();
-                }
-                return count;
-            }
-        });
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                protected void onBindViewHolderWithOffset(MainViewHolder holder, int position, int offsetTotal) {
+
+                }
+
+                @Override
+                public void onBindViewHolder(MainViewHolder holder, int position) {
+                    if (holder.itemView instanceof ViewPager) {
+                        ViewPager viewPager = (ViewPager) holder.itemView;
+                        viewPager.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200));
+                        // from position to get adapter
+                        viewPager.setAdapter(new BannerPagerAdapter(this, viewPool));
+                    }
+                }
+            });
+        }
+
+        if (GRID_LAYOUT) {
+            GridLayoutHelper layoutHelper;
+            layoutHelper = new GridLayoutHelper(4);
+            layoutHelper.setMargin(0, 10, 0, 10);
+            layoutHelper.setHGap(3);
+            layoutHelper.setAspectRatio(4f);
+            adapters.add(new SubAdapter(this, layoutHelper, 8));
+        }
+
+        if (HORIZONTAL_SCROLL_LAYOUT) {
+
+        }
+
+        if (GRID_LAYOUT) {
+            GridLayoutHelper layoutHelper;
+            layoutHelper = new GridLayoutHelper(2);
+            layoutHelper.setMargin(0, 10, 0, 10);
+            layoutHelper.setHGap(3);
+            layoutHelper.setAspectRatio(3f);
+            adapters.add(new SubAdapter(this, layoutHelper, 2));
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelper helper = new OnePlusNLayoutHelper();
+            helper.setBgColor(0xff876384);
+            helper.setMargin(10, 10, 10, 10);
+            helper.setPadding(10, 10, 10, 10);
+            adapters.add(new SubAdapter(this, helper, 3) {
+                @Override
+                public void onBindViewHolder(MainViewHolder holder, int position) {
+                    super.onBindViewHolder(holder, position);
+//                    LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300);
+//                    layoutParams.leftMargin = 10;
+//                    layoutParams.topMargin = 10;
+//                    layoutParams.rightMargin = 10;
+//                    layoutParams.bottomMargin = 10;
+//                    holder.itemView.setLayoutParams(layoutParams);
+                }
+            });
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelper helper = new OnePlusNLayoutHelper();
+            helper.setBgColor(0xff876384);
+            helper.setMargin(0, 10, 0, 10);
+            adapters.add(new SubAdapter(this, helper, 4));
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelper helper = new OnePlusNLayoutHelper();
+            helper.setBgColor(0xff876384);
+            helper.setMargin(0, 10, 0, 10);
+            adapters.add(new SubAdapter(this, helper, 5));
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelperEx helper = new OnePlusNLayoutHelperEx();
+            helper.setBgColor(0xff876384);
+            helper.setMargin(0, 10, 0, 10);
+            adapters.add(new SubAdapter(this, helper, 5));
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelperEx helper = new OnePlusNLayoutHelperEx();
+            helper.setBgColor(0xff876384);
+            helper.setMargin(0, 10, 0, 10);
+            helper.setColWeights(new float[]{40f, 45f, 15f, 60f, 0f});
+            adapters.add(new SubAdapter(this, helper, 5));
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelperEx helper = new OnePlusNLayoutHelperEx();
+            helper.setBgColor(0xff876384);
+            helper.setMargin(0, 10, 0, 10);
+            helper.setColWeights(new float[]{20f, 80f, 0f, 60f, 20f});
+            helper.setAspectRatio(4);
+            adapters.add(new SubAdapter(this, helper, 5));
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelperEx helper = new OnePlusNLayoutHelperEx();
+            helper.setBgColor(0xff876384);
+            helper.setMargin(0, 10, 0, 10);
+            adapters.add(new SubAdapter(this, helper, 6));
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelperEx helper = new OnePlusNLayoutHelperEx();
+            helper.setBgColor(0xff876384);
+            helper.setMargin(0, 10, 0, 10);
+            adapters.add(new SubAdapter(this, helper, 7));
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelperEx helper = new OnePlusNLayoutHelperEx();
+            helper.setBgColor(0xff876384);
+            helper.setMargin(0, 10, 0, 10);
+            helper.setColWeights(new float[]{40f, 45f, 15f, 60f, 0f, 30f, 30f});
+            adapters.add(new SubAdapter(this, helper, 7));
+        }
+
+        if (ONEN_LAYOUT) {
+            OnePlusNLayoutHelperEx helper = new OnePlusNLayoutHelperEx();
+            helper.setBgColor(0xffed7612);
+//            helper.setMargin(10, 10, 10, 10);
+//            helper.setPadding(10, 10, 10, 10);
+            helper.setColWeights(new float[]{30f, 20f, 50f, 40f, 30f, 35f, 35f});
+            adapters.add(new SubAdapter(this, helper, 7) {
+                @Override
+                public void onBindViewHolder(MainViewHolder holder, int position) {
+                    super.onBindViewHolder(holder, position);
+//                    LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300);
+//                    layoutParams.leftMargin = 10;
+//                    layoutParams.topMargin = 10;
+//                    layoutParams.rightMargin = 10;
+//                    layoutParams.bottomMargin = 10;
+//                    holder.itemView.setLayoutParams(layoutParams);
+                }
+            });
+        }
+
+        if (STICKY_LAYOUT) {
+            StickyLayoutHelper layoutHelper = new StickyLayoutHelper();
+            layoutHelper.setAspectRatio(4);
+            adapters.add(new SubAdapter(this, layoutHelper, 1, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100)));
+        }
+
+        if (SCROLL_FIX_LAYOUT) {
+            ScrollFixLayoutHelper layoutHelper = new ScrollFixLayoutHelper(FixLayoutHelper.BOTTOM_RIGHT, 20, 20);
+            layoutHelper.setShowType(ScrollFixLayoutHelper.SHOW_ON_LEAVE);
+            adapters.add(new SubAdapter(this, layoutHelper, 1) {
+                @Override
+                public void onBindViewHolder(MainViewHolder holder, int position) {
+                    super.onBindViewHolder(holder, position);
+                    LayoutParams layoutParams = new LayoutParams(50, 50);
+                    holder.itemView.setLayoutParams(layoutParams);
+                }
+            });
+        }
+
+        if (LINEAR_LAYOUT)
+            adapters.add(new SubAdapter(this, new LinearLayoutHelper(), 100));
+
+        delegateAdapter.setAdapters(adapters);
+
+        final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+        trigger = new Runnable() {
             @Override
             public void run() {
-                recyclerView.scrollToPosition(7);
-                recyclerView.getAdapter().notifyDataSetChanged();
+                // recyclerView.scrollToPosition(22);
+                // recyclerView.getAdapter().notifyDataSetChanged();
+                mRecyclerView.requestLayout();
+                // mainHandler.postDelayed(trigger, 1000);
             }
-        }, 6000);
+        };
+
+
+        mainHandler.postDelayed(trigger, 1000);
     }
 }
