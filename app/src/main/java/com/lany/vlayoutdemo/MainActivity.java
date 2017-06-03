@@ -1,8 +1,6 @@
 package com.lany.vlayoutdemo;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
@@ -22,11 +20,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static final boolean LINEAR_LAYOUT = true;
     private static final boolean ONEN_LAYOUT = true;
     private static final boolean GRID_LAYOUT = true;
     private static final boolean STICKY_LAYOUT = true;
     private static final boolean SCROLL_FIX_LAYOUT = true;
+
+
     private RecyclerView mRecyclerView;
 
     @Override
@@ -50,11 +49,11 @@ public class MainActivity extends AppCompatActivity {
 
         //添加分类
         GridLayoutHelper cateLayoutHelper;
-        cateLayoutHelper = new GridLayoutHelper(5);
+        cateLayoutHelper = new GridLayoutHelper(4);
         cateLayoutHelper.setMargin(0, 8, 0, 8);
 //        cateLayoutHelper.setHGap(3);
 //        cateLayoutHelper.setAspectRatio(4f);
-        adapters.add(new CateSubAdapter(this, cateLayoutHelper, 10));
+        adapters.add(new CateAdapter(this, cateLayoutHelper, ModelUtil.getChannelData()));
 
 
         if (GRID_LAYOUT) {
@@ -178,15 +177,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onBindViewHolder(MainViewHolder holder, int position) {
                     super.onBindViewHolder(holder, position);
-                    LayoutParams layoutParams = new LayoutParams(50, 50);
+                    LayoutParams layoutParams = new LayoutParams(100, 100);
                     holder.itemView.setLayoutParams(layoutParams);
                 }
             });
         }
 
-        if (LINEAR_LAYOUT)
-            adapters.add(new SubAdapter(this, new LinearLayoutHelper(), 100));
 
+        adapters.add(new SubAdapter(this, new LinearLayoutHelper(), 100));
         delegateAdapter.setAdapters(adapters);
     }
 }

@@ -11,19 +11,22 @@ import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class CateSubAdapter extends DelegateAdapter.Adapter<CateSubAdapter.ViewHolder> {
+public class CateAdapter extends DelegateAdapter.Adapter<CateAdapter.ViewHolder> {
     private Context mContext;
     private LayoutHelper mLayoutHelper;
-    private int mCount = 0;
+    private List<ChannelEntity> mItems = new ArrayList<>();
 
-    public CateSubAdapter(Context context, LayoutHelper layoutHelper, int count) {
+    public CateAdapter(Context context, LayoutHelper layoutHelper, List<ChannelEntity> mItems) {
         this.mContext = context;
         this.mLayoutHelper = layoutHelper;
-        this.mCount = count;
+        this.mItems = mItems;
     }
 
     @Override
@@ -44,12 +47,13 @@ public class CateSubAdapter extends DelegateAdapter.Adapter<CateSubAdapter.ViewH
 
     @Override
     protected void onBindViewHolderWithOffset(ViewHolder holder, int position, int offsetTotal) {
-        holder.title.setText("item" + position + " ");
+        ChannelEntity item = mItems.get(position);
+        holder.title.setText("" + item.getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return mCount;
+        return mItems.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
