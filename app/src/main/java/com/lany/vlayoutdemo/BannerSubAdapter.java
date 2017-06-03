@@ -1,7 +1,6 @@
 package com.lany.vlayoutdemo;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,20 +25,15 @@ import butterknife.ButterKnife;
 public class BannerSubAdapter extends DelegateAdapter.Adapter<BannerSubAdapter.BannerViewHolder> {
     private Context mContext;
     private LayoutHelper mLayoutHelper;
-    private VirtualLayoutManager.LayoutParams mLayoutParams;
     private int mCount = 0;
 
     List<String> items = new ArrayList<>();
 
-    public BannerSubAdapter(Context context, LayoutHelper layoutHelper, int count) {
-        this(context, layoutHelper, count, new VirtualLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500));
-    }
 
-    public BannerSubAdapter(Context context, LayoutHelper layoutHelper, int count, @NonNull VirtualLayoutManager.LayoutParams layoutParams) {
+    public BannerSubAdapter(Context context, LayoutHelper layoutHelper, int count) {
         this.mContext = context;
         this.mLayoutHelper = layoutHelper;
         this.mCount = count;
-        this.mLayoutParams = layoutParams;
 
         items.add("http://img02.tooopen.com/images/20160427/tooopen_sy_160701449393.jpg");
         items.add("http://img02.tooopen.com/images/20151109/tooopen_sy_148088156554.jpg");
@@ -59,7 +53,7 @@ public class BannerSubAdapter extends DelegateAdapter.Adapter<BannerSubAdapter.B
 
     @Override
     public void onBindViewHolder(BannerViewHolder holder, int position) {
-        holder.itemView.setLayoutParams(new VirtualLayoutManager.LayoutParams(mLayoutParams));
+        holder.itemView.setLayoutParams(new VirtualLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500));
     }
 
     @Override

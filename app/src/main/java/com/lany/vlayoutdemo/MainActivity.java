@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private static final boolean ONEN_LAYOUT = true;
     private static final boolean GRID_LAYOUT = true;
     private static final boolean STICKY_LAYOUT = true;
-    private static final boolean HORIZONTAL_SCROLL_LAYOUT = true;
     private static final boolean SCROLL_FIX_LAYOUT = true;
 
     private Runnable trigger;
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(layoutManager);
         final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
         mRecyclerView.setRecycledViewPool(viewPool);
-        viewPool.setMaxRecycledViews(0, 20);
+        viewPool.setMaxRecycledViews(0, 10);
 
         final DelegateAdapter delegateAdapter = new DelegateAdapter(layoutManager, true);
         mRecyclerView.setAdapter(delegateAdapter);
@@ -51,18 +50,14 @@ public class MainActivity extends AppCompatActivity {
         //添加banner
         adapters.add(new BannerSubAdapter(this, new LinearLayoutHelper(), 1));
 
-        if (GRID_LAYOUT) {
-            GridLayoutHelper layoutHelper;
-            layoutHelper = new GridLayoutHelper(4);
-            layoutHelper.setMargin(0, 10, 0, 10);
-            layoutHelper.setHGap(3);
-            layoutHelper.setAspectRatio(4f);
-            adapters.add(new SubAdapter(this, layoutHelper, 8));
-        }
+        //添加分类
+        GridLayoutHelper cateLayoutHelper;
+        cateLayoutHelper = new GridLayoutHelper(4);
+        cateLayoutHelper.setMargin(0, 10, 0, 10);
+        cateLayoutHelper.setHGap(3);
+        cateLayoutHelper.setAspectRatio(4f);
+        adapters.add(new CateSubAdapter(this, cateLayoutHelper, 8));
 
-        if (HORIZONTAL_SCROLL_LAYOUT) {
-
-        }
 
         if (GRID_LAYOUT) {
             GridLayoutHelper layoutHelper;
