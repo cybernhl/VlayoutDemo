@@ -50,11 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
         //添加分类
         GridLayoutHelper cateLayoutHelper;
-        cateLayoutHelper = new GridLayoutHelper(4);
-        cateLayoutHelper.setMargin(0, 10, 0, 10);
-        cateLayoutHelper.setHGap(3);
-        cateLayoutHelper.setAspectRatio(4f);
-        adapters.add(new CateSubAdapter(this, cateLayoutHelper, 8));
+        cateLayoutHelper = new GridLayoutHelper(5);
+        cateLayoutHelper.setMargin(0, 8, 0, 8);
+//        cateLayoutHelper.setHGap(3);
+//        cateLayoutHelper.setAspectRatio(4f);
+        adapters.add(new CateSubAdapter(this, cateLayoutHelper, 10));
 
 
         if (GRID_LAYOUT) {

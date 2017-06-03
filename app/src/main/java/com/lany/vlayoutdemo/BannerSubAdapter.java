@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class BannerSubAdapter extends DelegateAdapter.Adapter<BannerSubAdapter.BannerViewHolder> {
+public class BannerSubAdapter extends DelegateAdapter.Adapter<BannerSubAdapter.ViewHolder> {
     private Context mContext;
     private LayoutHelper mLayoutHelper;
     private int mCount = 0;
@@ -46,18 +46,14 @@ public class BannerSubAdapter extends DelegateAdapter.Adapter<BannerSubAdapter.B
     }
 
     @Override
-    public BannerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.banner_item, parent, false);
-        return new BannerViewHolder(view);
+        view.setLayoutParams(new VirtualLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500));
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(BannerViewHolder holder, int position) {
-        holder.itemView.setLayoutParams(new VirtualLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500));
-    }
-
-    @Override
-    protected void onBindViewHolderWithOffset(BannerViewHolder holder, int position, int offsetTotal) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         holder.bannerView.setAdapter(new BannerAdapter<String>(items) {
 
             @Override
@@ -74,6 +70,12 @@ public class BannerSubAdapter extends DelegateAdapter.Adapter<BannerSubAdapter.B
 
             }
         });
+
+    }
+
+    @Override
+    protected void onBindViewHolderWithOffset(ViewHolder holder, int position, int offsetTotal) {
+
     }
 
     @Override
@@ -81,11 +83,11 @@ public class BannerSubAdapter extends DelegateAdapter.Adapter<BannerSubAdapter.B
         return mCount;
     }
 
-    class BannerViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.banner_view)
         BannerView bannerView;
 
-        public BannerViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
