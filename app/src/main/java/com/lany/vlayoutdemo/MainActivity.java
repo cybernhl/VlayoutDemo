@@ -3,10 +3,8 @@ package com.lany.vlayoutdemo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
@@ -24,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static final boolean BANNER_LAYOUT = true;
     private static final boolean LINEAR_LAYOUT = true;
     private static final boolean ONEN_LAYOUT = true;
     private static final boolean GRID_LAYOUT = true;
@@ -51,44 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
         List<DelegateAdapter.Adapter> adapters = new LinkedList<>();
 
-        if (BANNER_LAYOUT) {
-            adapters.add(new BannerSubAdapter(this, new LinearLayoutHelper(), 1) {
-
-                @Override
-                public void onViewRecycled(MainViewHolder holder) {
-                    if (holder.itemView instanceof ViewPager) {
-                        ((ViewPager) holder.itemView).setAdapter(null);
-                    }
-                }
-
-                @Override
-                public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                    if (viewType == 1)
-                        return new MainViewHolder(LayoutInflater.from(MainActivity.this).inflate(R.layout.view_pager, parent, false));
-                    return super.onCreateViewHolder(parent, viewType);
-                }
-
-                @Override
-                public int getItemViewType(int position) {
-                    return 1;
-                }
-
-                @Override
-                protected void onBindViewHolderWithOffset(MainViewHolder holder, int position, int offsetTotal) {
-
-                }
-
-                @Override
-                public void onBindViewHolder(MainViewHolder holder, int position) {
-                    if (holder.itemView instanceof ViewPager) {
-                        ViewPager viewPager = (ViewPager) holder.itemView;
-                        viewPager.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 200));
-                        // from position to get adapter
-                        viewPager.setAdapter(new BannerPagerAdapter(this, viewPool));
-                    }
-                }
-            });
-        }
+        //添加banner
+        adapters.add(new BannerSubAdapter(this, new LinearLayoutHelper(), 1));
 
         if (GRID_LAYOUT) {
             GridLayoutHelper layoutHelper;
